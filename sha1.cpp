@@ -204,15 +204,15 @@ void Digest::update(const char* s)
 {
 	while (true)
 	{
-		char sbuf[BLOCK_BYTES];
 		strncpy(&buffer[buffer_size], s, BLOCK_BYTES - buffer_size);
-		buffer_size = strlen(buffer);
+		buffer_size = strnlen(buffer, BLOCK_BYTES);
 		if (buffer_size != BLOCK_BYTES)
 			return;
 		uint32_t block[BLOCK_INTS];
 		buffer_to_block(buffer, block);
 		transform(digest, block, transforms);
 		buffer_size = 0;
+		s += BLOCK_BYTES;
 	}
 }
 
