@@ -218,27 +218,24 @@ void Digest::update(const char* s)
 
 static char hex[] = { '0', '1', '2', '3', '4', '5', '6', '7',
 						'8', '9' ,'a', 'b', 'c', 'd', 'e', 'f' };
-int32_t uint_to_hex_str(uint32_t num, char* buff)
+void uint_to_hex_str(uint32_t num, char* buff)
 {
-	int32_t len = 0, k = 0;
-	do // for every 4 bits
+	for (int32_t k = 0; k < 8; k++)
 	{
 		// get the equivalent hex digit
-		buff[len] = hex[num & 0xF];
-		len++;
+		buff[k] = hex[num & 0xF];
 		num >>= 4;
-	} while (num != 0);
-
-	// since we get the digits in the wrong order reverse the digits in the buffer
-	for (;k < len / 2; k++)
-	{
-		// xor swapping
-		buff[k] ^= buff[len - k - 1];
-		buff[len - k - 1] ^= buff[k];
-		buff[k] ^= buff[len - k - 1];
 	}
 
-	return len;
+	// since we get the digits in the wrong order reverse the digits in the buffer
+
+	for (int32_t k = 0; k < 4; k++)
+	{
+		// xor swapping
+		buff[k] ^= buff[8 - k - 1];
+		buff[8 - k - 1] ^= buff[k];
+		buff[k] ^= buff[8 - k - 1];
+	}
 }
 
 // add padding and return the message digest.
@@ -280,10 +277,8 @@ void Digest::final(char* result)
 	for (size_t i = 0; i < sizeof(digest) / sizeof(digest[0]); i++)
 	{
 		char hex_str[8];
-		int32_t length = uint_to_hex_str(digest[i], hex_str);
-
-		int32_t index = i * 8 + (8 - length);
-		strncpy(&result[index], hex_str, 8);
+		uint_to_hex_str(digest[i], hex_str);
+		strncpy(&result[i * 8], hex_str, 8);
 	}
 
 	result[total_length] = 0; // null terminate
