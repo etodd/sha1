@@ -22,10 +22,10 @@ namespace sha1
 
 	struct Digest
 	{
+		uint64_t transforms;
+		size_t buffer_size;
 		uint32_t digest[5];
 		char buffer[64];
-		uint32_t buffer_size;
-		uint64_t transforms;
 
 		Digest();
 		void update(const char*);

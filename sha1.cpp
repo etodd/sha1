@@ -245,7 +245,7 @@ void Digest::final(char* result)
 	uint64_t total_bits = (transforms * BLOCK_BYTES + buffer_size) * 8;
 
 	// padding
-	buffer[buffer_size] = 0x80;
+	buffer[buffer_size] = char(0x80);
 	buffer_size++;
 	size_t orig_size = buffer_size;
 	while (buffer_size < BLOCK_BYTES)
@@ -265,7 +265,7 @@ void Digest::final(char* result)
 	}
 
 	// append total_bits, split this uint64_t into two uint32_t
-	block[BLOCK_INTS - 1] = total_bits;
+	block[BLOCK_INTS - 1] = uint32_t(total_bits);
 	block[BLOCK_INTS - 2] = (total_bits >> 32);
 	transform(digest, block, transforms);
 
